@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KrishiAadhar | The Digital Spine of Indian Agriculture</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <!-- Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'ka-green': '#10B981',      /* Vibrant Emerald */
+                        'ka-green-dark': '#047857',
+                        'ka-yellow': '#F59E0B',     /* Amber/Harvest */
+                        'ka-blue': '#3B82F6',       /* Tech Blue */
+                        'ka-dark': '#1F2937',       /* Dark Gray */
+                        'ka-light': '#F3F4F6',      /* Light Gray */
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #10B981; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #047857; 
+        }
+
+        /* Chart Container Base Styles */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            /* Default heights, overridden by utility classes if needed */
+            height: 300px;
+            max-height: 400px;
+        }
+
+        /* Flowchart Node Styling */
+        .flow-node {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .flow-node:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+    
+    <!-- 
+    PALETTE SELECTION: "Energetic & Playful" / "Fresh"
+    Focus: High contrast greens and yellows to represent crops and harvest, 
+    grounded with clean whites and dark grays for modern UI.
+    -->
+    <!-- 
+    NARRATIVE PLAN:
+    1. Header: Brand intro.
+    2. Problem Section: "The Reality" (Losses, Fragmentation) -> Charts: Doughnut, Big Number.
+    3. Tech Section: "Precision Agronomy" -> Chart: Plotly 3D Surface (Soil Map).
+    4. Workflow Section: "The User Journey" -> HTML/CSS Timeline (No Mermaid).
+    5. Impact Section: "Projected Gains" -> Chart: Bar Chart.
+    6. Business Section: "Revenue & Market" -> Chart: Polar Area.
+    7. Footer: Summary.
+    -->
+</head>
+<body class="bg-ka-light text-ka-dark font-sans leading-relaxed">
+
+    <!-- HERO SECTION -->
+    <header class="bg-gradient-to-br from-ka-green-dark to-ka-green text-white pt-20 pb-16 px-4 shadow-lg">
+        <div class="max-w-6xl mx-auto text-center">
+            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-4">
+                KrishiAadhar
+            </h1>
+            <p class="text-xl md:text-2xl font-light opacity-90 max-w-3xl mx-auto">
+                The Digital Spine for Indian Agriculture. From Hyperspectral Imaging to Blockchain Harvest Tracking.
+            </p>
+            <div class="mt-8 flex justify-center space-x-4">
+                <span class="bg-white text-ka-green-dark px-4 py-2 rounded-full font-bold text-sm uppercase tracking-wide shadow">Farm-to-Market OS</span>
+                <span class="bg-ka-yellow text-white px-4 py-2 rounded-full font-bold text-sm uppercase tracking-wide shadow">SaaS + DaaS + Fintech</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- SECTION 1: THE CRISIS (Problem Statement) -->
+    <section class="max-w-6xl mx-auto px-4 py-16">
+        <div class="mb-12 text-center">
+            <h2 class="text-3xl font-bold text-ka-dark mb-4">The Indian Farmer's Reality (2025-26)</h2>
+            <p class="text-gray-600 max-w-3xl mx-auto">
+                Indian agriculture is trapped in a cycle of fragmentation, climate uncertainty, and economic leakage. 
+                With 86% of farmers operating on marginal land, traditional mechanization is failing, and post-harvest losses are eroding value.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Card 1: Rain-Fed Dependency -->
+            <div class="bg-white rounded-xl shadow-md p-6 border-t-4 border-ka-yellow">
+                <h3 class="text-lg font-semibold mb-2 text-gray-700">Vulnerability to Climate</h3>
+                <p class="text-sm text-gray-500 mb-6">Percentage of Indian farmland reliant on erratic monsoons.</p>
+                <div class="chart-container h-64">
+                    <canvas id="rainFedChart"></canvas>
+                </div>
+                <p class="text-center mt-4 text-xs font-bold text-ka-yellow">Yields projected to drop 20% by 2050 due to heat stress.</p>
+            </div>
+
+            <!-- Card 2: Post Harvest Loss (Big Number) -->
+            <div class="bg-white rounded-xl shadow-md p-6 border-t-4 border-red-500 flex flex-col justify-center items-center text-center">
+                <h3 class="text-lg font-semibold mb-2 text-gray-700">Annual Economic Leakage</h3>
+                <p class="text-sm text-gray-500 mb-6">Value lost post-harvest due to supply chain opacity.</p>
+                <div class="text-6xl font-extrabold text-red-500 mb-2">₹1.53T</div>
+                <div class="text-xl font-bold text-gray-800">Trillion Rupees</div>
+                <p class="mt-6 text-sm text-gray-600 bg-red-50 px-3 py-1 rounded">
+                    Middlemen capture <span class="font-bold">40%</span> of final consumer price.
+                </p>
+            </div>
+
+            <!-- Card 3: Smallholder Dominance -->
+            <div class="bg-white rounded-xl shadow-md p-6 border-t-4 border-ka-green">
+                <h3 class="text-lg font-semibold mb-2 text-gray-700">Land Fragmentation</h3>
+                <p class="text-sm text-gray-500 mb-6">Percentage of farmers classified as Small & Marginal.</p>
+                <div class="chart-container h-64">
+                    <canvas id="landHoldingChart"></canvas>
+                </div>
+                <p class="text-center mt-4 text-xs font-bold text-ka-green">Avg Operational Holding: 0.6 Hectares.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: THE TECHNOLOGY (Hyperspectral Deep Dive) -->
+    <section class="bg-white py-16 shadow-inner">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                
+                <!-- Text Content -->
+                <div>
+                    <div class="inline-block bg-ka-blue text-white text-xs font-bold px-2 py-1 rounded mb-2">PHASE 1: PRODUCTION</div>
+                    <h2 class="text-3xl font-bold text-ka-dark mb-4">Precision Agronomy: Digital Soil Mapping</h2>
+                    <p class="text-gray-600 mb-6">
+                        KrishiAadhar replaces guesswork with <strong>Hyperspectral Imaging</strong>. Unlike standard soil tests, our drone and satellite fusion technology creates a 3D nutrient map of every farm. This allows for variable-rate fertilizer application, stopping urea overuse.
+                    </p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-start">
+                            <span class="text-ka-green mr-2 text-xl">&#10003;</span>
+                            <span class="text-gray-700"><strong>NPK Optimization:</strong> Target recommended 4:2:1 ratio.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-ka-green mr-2 text-xl">&#10003;</span>
+                            <span class="text-gray-700"><strong>Water Conservation:</strong> Integrate with IoT sensors for smart irrigation.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-ka-green mr-2 text-xl">&#10003;</span>
+                            <span class="text-gray-700"><strong>Input Cost Reduction:</strong> Target 15% reduction in fertilizer spend.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Plotly Chart Container -->
+                <div class="bg-gray-50 rounded-xl shadow-lg border border-gray-200 p-2">
+                    <h4 class="text-center text-sm font-bold text-gray-500 py-2">Simulated Hyperspectral Nitrogen Analysis (3D Surface)</h4>
+                    <!-- Defined height for Plotly container -->
+                    <div id="soilMapChart" class="w-full h-[400px]"></div>
+                    <p class="text-xs text-center text-gray-400 mt-2">Interactive 3D Visualization: Rotate to view field topology.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: THE USER JOURNEY (Flowchart) -->
+    <section class="max-w-6xl mx-auto px-4 py-16">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-ka-dark mb-4">The Trust-Chain Workflow</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">
+                How KrishiAadhar bridges the gap between the Bank Correspondent (BC) Agent on the ground and the National Market in the cloud.
+            </p>
+        </div>
+
+        <!-- Custom HTML/CSS Flowchart (Vertical on mobile, horizontal on desktop) -->
+        <div class="relative">
+            <!-- Connecting Line (Desktop) -->
+            <div class="hidden md:block absolute top-1/2 left-0 w-full h-1 bg-gray-200 -z-10 transform -translate-y-1/2"></div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                
+                <!-- Step 1 -->
+                <div class="flow-node bg-white p-6 rounded-lg shadow border border-gray-100 flex flex-col items-center text-center">
+                    <div class="w-12 h-12 bg-ka-green-dark text-white rounded-full flex items-center justify-center text-xl font-bold mb-4">1</div>
+                    <h4 class="font-bold text-gray-800 mb-2">Onboarding</h4>
+                    <p class="text-xs text-gray-500">BC Agent ("Krishi Mitra") geo-fences land & creates profile.</p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="flow-node bg-white p-6 rounded-lg shadow border border-gray-100 flex flex-col items-center text-center">
+                    <div class="w-12 h-12 bg-ka-blue text-white rounded-full flex items-center justify-center text-xl font-bold mb-4">2</div>
+                    <h4 class="font-bold text-gray-800 mb-2">Precision Care</h4>
+                    <p class="text-xs text-gray-500">Soil Map generated. Farmer books Drone Spraying via app.</p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="flow-node bg-white p-6 rounded-lg shadow border border-gray-100 flex flex-col items-center text-center">
+                    <div class="w-12 h-12 bg-ka-yellow text-white rounded-full flex items-center justify-center text-xl font-bold mb-4">3</div>
+                    <h4 class="font-bold text-gray-800 mb-2">Harvest & Grade</h4>
+                    <p class="text-xs text-gray-500">AI-Vision grades quality. IoT logs harvest data to Blockchain.</p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="flow-node bg-white p-6 rounded-lg shadow border border-gray-100 flex flex-col items-center text-center">
+                    <div class="w-12 h-12 bg-purple-600 text-white rounded-full flex items-center justify-center text-xl font-bold mb-4">4</div>
+                    <h4 class="font-bold text-gray-800 mb-2">E-NAM Trade</h4>
+                    <p class="text-xs text-gray-500">Auto-listing on National Market. Real-time bidding discovery.</p>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="flow-node bg-white p-6 rounded-lg shadow border border-gray-100 flex flex-col items-center text-center">
+                    <div class="w-12 h-12 bg-green-800 text-white rounded-full flex items-center justify-center text-xl font-bold mb-4">5</div>
+                    <h4 class="font-bold text-gray-800 mb-2">Settlement</h4>
+                    <p class="text-xs text-gray-500">Smart Contract releases payment to verified bank account.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 4: IMPACT & ECONOMICS -->
+    <section class="bg-gray-900 text-white py-16">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                
+                <!-- Impact Chart -->
+                <div>
+                    <h3 class="text-2xl font-bold mb-2">Projected Socioeconomic Impact</h3>
+                    <p class="text-gray-400 mb-8 text-sm">Targets for first 2 years of deployment.</p>
+                    <div class="chart-container bg-gray-800 rounded-xl p-4">
+                        <canvas id="impactChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Revenue Chart -->
+                <div>
+                    <h3 class="text-2xl font-bold mb-2">Business Revenue Streams</h3>
+                    <p class="text-gray-400 mb-8 text-sm">Diversified income via Service, Trade, and SaaS.</p>
+                    <div class="chart-container bg-gray-800 rounded-xl p-4">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5: BLOCKCHAIN MODULE -->
+    <section class="max-w-4xl mx-auto px-4 py-16">
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+            <div class="bg-ka-dark p-6">
+                <h2 class="text-2xl font-bold text-white">Blockchain H2S (Harvest to Storage) Tracking</h2>
+                <p class="text-gray-400 text-sm">The "Digital Twin" creating immutable trust.</p>
+            </div>
+            
+            <div class="p-8">
+                <!-- Data Table Layout using CSS Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 text-sm">
+                    
+                    <!-- Col 1 -->
+                    <div class="border-l-4 border-ka-green pl-4">
+                        <h4 class="font-bold text-ka-dark uppercase mb-1">Harvesting</h4>
+                        <ul class="text-gray-600 space-y-1">
+                            <li>&#8226; GPS Coordinates</li>
+                            <li>&#8226; Field ID</li>
+                            <li>&#8226; Crop Variety</li>
+                            <li><em class="text-xs text-ka-green">Source: BC Agent</em></li>
+                        </ul>
+                    </div>
+
+                    <!-- Col 2 -->
+                    <div class="border-l-4 border-ka-yellow pl-4">
+                        <h4 class="font-bold text-ka-dark uppercase mb-1">Grading</h4>
+                        <ul class="text-gray-600 space-y-1">
+                            <li>&#8226; Moisture %</li>
+                            <li>&#8226; Weight</li>
+                            <li>&#8226; AI Quality Grade</li>
+                            <li><em class="text-xs text-ka-green">Source: Smart Scales</em></li>
+                        </ul>
+                    </div>
+
+                    <!-- Col 3 -->
+                    <div class="border-l-4 border-ka-blue pl-4">
+                        <h4 class="font-bold text-ka-dark uppercase mb-1">Transport</h4>
+                        <ul class="text-gray-600 space-y-1">
+                            <li>&#8226; Shock/Vibration</li>
+                            <li>&#8226; Route Deviation</li>
+                            <li>&#8226; Timestamps</li>
+                            <li><em class="text-xs text-ka-green">Source: IoT Accelerometer</em></li>
+                        </ul>
+                    </div>
+
+                    <!-- Col 4 -->
+                    <div class="border-l-4 border-purple-600 pl-4">
+                        <h4 class="font-bold text-ka-dark uppercase mb-1">Storage</h4>
+                        <ul class="text-gray-600 space-y-1">
+                            <li>&#8226; Temperature</li>
+                            <li>&#8226; Humidity</li>
+                            <li>&#8226; Ethylene Gas</li>
+                            <li><em class="text-xs text-ka-green">Source: MQ-4 Sensors</em></li>
+                        </ul>
+                    </div>
+
+                </div>
+                
+                <div class="mt-8 bg-blue-50 p-4 rounded-lg border border-blue-100 flex items-center">
+                    <div class="text-3xl mr-4">🔐</div>
+                    <div>
+                        <h5 class="font-bold text-ka-blue">Smart Contract Outcome</h5>
+                        <p class="text-sm text-gray-600">
+                            Verified data acts as a <span class="font-bold">Digital Credit Score</span>, enabling formal bank loans against yield history instead of land collateral.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-ka-dark text-gray-400 py-8 text-center text-sm">
+        <p>&copy; 2026 KrishiAadhar. Empowering the Indian Farmer.</p>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- HELPER: LABEL WRAPPING ---
+        function wrapLabel(label, maxLen = 16) {
+            if (label.length <= maxLen) return label;
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if (currentLine.length + 1 + words[i].length <= maxLen) {
+                    currentLine += ' ' + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // --- CHART.JS COMMON OPTIONS ---
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            if (Array.isArray(label)) {
+                                return label.join(' ');
+                            } else {
+                                return label;
+                            }
+                        }
+                    }
+                },
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        font: {
+                            family: 'Inter',
+                            size: 11
+                        },
+                        boxWidth: 12
+                    }
+                }
+            }
+        };
+
+        // --- 1. RAIN FED CHART (Doughnut) ---
+        const rainCtx = document.getElementById('rainFedChart').getContext('2d');
+        new Chart(rainCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Rain-Fed (Vulnerable)', 'Irrigated (Stable)'],
+                datasets: [{
+                    data: [65, 35],
+                    backgroundColor: ['#F59E0B', '#10B981'], // Amber for dry/sun, Green for irrigated
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                ...commonOptions,
+                cutout: '70%',
+                plugins: {
+                    ...commonOptions.plugins,
+                    legend: { display: true, position: 'bottom' }
+                }
+            }
+        });
+
+        // --- 2. LAND HOLDING CHART (Pie/Doughnut) ---
+        const landCtx = document.getElementById('landHoldingChart').getContext('2d');
+        new Chart(landCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Small & Marginal Farmers (<2ha)', 'Medium & Large Farmers'],
+                datasets: [{
+                    data: [86, 14],
+                    backgroundColor: ['#10B981', '#E5E7EB'], // Green dominant, Gray recessive
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                ...commonOptions,
+                cutout: '70%',
+            }
+        });
+
+        // --- 3. IMPACT CHART (Horizontal Bar) ---
+        const impactCtx = document.getElementById('impactChart').getContext('2d');
+        const impactLabels = ['Net Farmer Income', 'Input Cost Reduction', 'Post-Harvest Waste Reduction'].map(l => wrapLabel(l, 20));
+        
+        new Chart(impactCtx, {
+            type: 'bar',
+            data: {
+                labels: impactLabels,
+                datasets: [{
+                    label: 'Target Improvement (%)',
+                    data: [27.5, 15, 12], // Avg of 25-30 for income
+                    backgroundColor: ['#10B981', '#3B82F6', '#F59E0B'],
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                ...commonOptions,
+                indexAxis: 'y', // Horizontal bar
+                plugins: {
+                    ...commonOptions.plugins,
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        grid: { color: '#374151' },
+                        ticks: { color: '#9CA3AF' }
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: { color: '#E5E7EB', font: {size: 11} }
+                    }
+                }
+            }
+        });
+
+        // --- 4. REVENUE CHART (Polar Area) ---
+        const revCtx = document.getElementById('revenueChart').getContext('2d');
+        const revLabels = ['DaaS & Service Fees (5%)', 'Marketplace Commission (1.5%)', 'SaaS Subscriptions (FPOs)'].map(l => wrapLabel(l, 20));
+
+        new Chart(revCtx, {
+            type: 'polarArea',
+            data: {
+                labels: revLabels,
+                datasets: [{
+                    data: [60, 25, 15], // Hypothetical distribution based on volume
+                    backgroundColor: [
+                        'rgba(16, 185, 129, 0.7)', // Green
+                        'rgba(59, 130, 246, 0.7)', // Blue
+                        'rgba(245, 158, 11, 0.7)'  // Yellow
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                ...commonOptions,
+                scales: {
+                    r: {
+                        grid: { color: '#374151' },
+                        ticks: { display: false, backdropColor: 'transparent' }
+                    }
+                },
+                plugins: {
+                    ...commonOptions.plugins,
+                    legend: { 
+                        position: 'right',
+                        labels: { color: '#D1D5DB' }
+                    }
+                }
+            }
+        });
+
+        // --- 5. PLOTLY 3D SURFACE (Soil Map) ---
+        // Generating synthetic data for a field's Nitrogen levels
+        // z represents Nitrogen content (varying across x, y coordinates)
+        
+        const size = 20;
+        const x = [], y = [], z = [];
+        
+        for(let i = 0; i < size; i++) {
+            let row = [];
+            for(let j = 0; j < size; j++) {
+                // Create a wave-like pattern to simulate soil variance
+                let value = Math.sin(i/3) * Math.cos(j/3) * 2 + 5; 
+                // Add a "deficiency zone" (Problem area)
+                if (i > 12 && j > 12) value -= 3;
+                row.push(value);
+            }
+            z.push(row);
+            x.push(i);
+            y.push(j);
+        }
+
+        const plotlyData = [{
+            z: z,
+            type: 'surface',
+            colorscale: 'Earth', // Appropriate for soil
+            showscale: false,
+            contours: {
+                z: {
+                    show: true,
+                    usecolormap: true,
+                    highlightcolor: "#42f56f",
+                    project: {z: true}
+                }
+            }
+        }];
+
+        const plotlyLayout = {
+            autosize: true,
+            margin: { l: 0, r: 0, b: 0, t: 0 },
+            scene: {
+                xaxis: {title: '', showticklabels: false, showgrid: false},
+                yaxis: {title: '', showticklabels: false, showgrid: false},
+                zaxis: {title: 'Nitrogen Level', showticklabels: false},
+                camera: {
+                    eye: {x: 1.5, y: 1.5, z: 1.2}
+                }
+            },
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)'
+        };
+
+        const config = {responsive: true, displayModeBar: false};
+
+        Plotly.newPlot('soilMapChart', plotlyData, plotlyLayout, config);
+
+    </script>
+    
+    <!-- NO SVG used directly in HTML structure. Icons are Unicode or CSS-styled. -->
+    <!-- NO Mermaid JS used. Process flows are HTML/CSS. -->
+</body>
+</html>
